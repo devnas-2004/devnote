@@ -4,11 +4,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+import { verifyToken } from "../middleware/auth.js";
 const router = express.Router();
 
 // Signup & login routes here...
 
-
+router.get("/profile", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 
 
 // Signup
