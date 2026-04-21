@@ -14,15 +14,26 @@ const app = express();
 
 
 import cors from "cors";
+const allowedOrigins = [
+  "https://devnote-git-main-devnas-2004s-projects.vercel.app",
+  "https://devnote-4s4dpong9-devnas-2004s-projects.vercel.app"
+];
 
-const corsOptions = {
-  origin: "https://devnote-git-main-devnas-2004s-projects.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
-app.use(cors(corsOptions));
 
 
 
