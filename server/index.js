@@ -11,17 +11,18 @@ dotenv.config();
 const app = express();
 
 // Middleware
+
+
 import cors from "cors";
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://devnote-chi.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-
+app.use(
+  cors({
+    origin: "https://devnote-4s4dpong9-devnas-2004s-projects.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
 
 app.use(express.json());
 
