@@ -13,7 +13,15 @@ const app = express();
 // Middleware
 import cors from "cors";
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://devnote-chi.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+app.options("*", cors());
 
 app.use(express.json());
 
