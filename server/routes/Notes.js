@@ -1,4 +1,4 @@
-// routes/notes.js
+// routes/Notes.js
 import express from "express";
 import Note from "../models/Note.js";
 import { verifyToken } from "../middleware/auth.js";

@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
-//app.use("/api/notes", notesRoutes);
+app.use("/api/notes", notesRoutes);
 app.use("/api/auth", authRoutes);
 
 // Test route
