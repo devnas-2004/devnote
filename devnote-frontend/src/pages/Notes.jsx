@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 const API = import.meta.env.VITE_API_URL;
-const API_URL = `https://devnote-u4tl.onrender.com/api/notes/`;
+const API_URL = `${API}/api/notes`;
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
@@ -14,7 +14,7 @@ export default function Notes() {
 
   const token = localStorage.getItem("token");
 
-  // Redirect to login if no token
+  // Redirect if not logged in
   useEffect(() => {
     if (!token) {
       window.location.href = "/login";
@@ -24,15 +24,22 @@ export default function Notes() {
     // eslint-disable-next-line
   }, []);
 
-  // Fetch all notes
+  // Fetch notes
   const fetchNotes = async () => {
     setLoading(true);
     try {
       const res = await fetch(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Fetch notes failed:", text);
+        return;
+      }
+
       const data = await res.json();
-      setNotes(data);
+      setNotes(data.notes || data); // flexible for backend format
     } catch (err) {
       console.error("Error fetching notes:", err);
     } finally {
@@ -40,16 +47,27 @@ export default function Notes() {
     }
   };
 
-  // Add new note
+  // Add note
   const addNote = async (e) => {
     e.preventDefault();
     if (!title || !content) return;
+
     try {
-      await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ title, content }),
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Add note failed:", text);
+        return;
+      }
+
       setTitle("");
       setContent("");
       fetchNotes();
@@ -58,7 +76,7 @@ export default function Notes() {
     }
   };
 
-  // Start editing a note
+  // Start editing
   const startEdit = (note) => {
     setEditId(note._id);
     setTitle(note.title);
@@ -69,12 +87,23 @@ export default function Notes() {
   const updateNote = async (e) => {
     e.preventDefault();
     if (!title || !content) return;
+
     try {
-      await fetch(`${API_URL}${editId}`, {
+      const res = await fetch(`${API_URL}/${editId}`, {  // ✅ FIXED
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ title, content }),
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Update failed:", text);
+        return;
+      }
+
       setTitle("");
       setContent("");
       setEditId(null);
@@ -87,11 +116,19 @@ export default function Notes() {
   // Delete note
   const deleteNote = async (id) => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
+
     try {
-      await fetch(`${API_URL}${id}`, {
+      const res = await fetch(`${API_URL}/${id}`, {  // ✅ FIXED
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Delete failed:", text);
+        return;
+      }
+
       fetchNotes();
     } catch (err) {
       console.error("Error deleting note:", err);
@@ -100,7 +137,8 @@ export default function Notes() {
 
   return (
     <div className={`container mt-5 ${darkMode ? "bg-dark text-light" : ""}`}>
-      {/* Header + Dark Mode Toggle */}
+      
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>My Notes</h2>
         <button
@@ -111,7 +149,7 @@ export default function Notes() {
         </button>
       </div>
 
-      {/* Form to Add/Edit Note */}
+      {/* Form */}
       <form onSubmit={editId ? updateNote : addNote} className="mb-4">
         <input
           type="text"
@@ -131,6 +169,7 @@ export default function Notes() {
         <button type="submit" className="btn btn-primary">
           {editId ? "Update Note" : "Add Note"}
         </button>
+
         {editId && (
           <button
             type="button"
@@ -146,10 +185,10 @@ export default function Notes() {
         )}
       </form>
 
-      {/* Loading Indicator */}
+      {/* Loading */}
       {loading && <p>Loading notes...</p>}
 
-      {/* Notes List */}
+      {/* Notes */}
       <div className="row row-cols-1 row-cols-md-3 g-3">
         {notes.map((note) => (
           <div className="col" key={note._id}>
@@ -162,12 +201,14 @@ export default function Notes() {
               <div className="card-body">
                 <h5 className="card-title">{note.title}</h5>
                 <p className="card-text">{note.content}</p>
+
                 <button
                   className="btn btn-sm btn-warning me-2"
                   onClick={() => startEdit(note)}
                 >
                   Edit
                 </button>
+
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => deleteNote(note._id)}
@@ -179,6 +220,7 @@ export default function Notes() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }
