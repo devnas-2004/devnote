@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-import cors from "cors";
+
 
 app.use(cors({
   origin: [
