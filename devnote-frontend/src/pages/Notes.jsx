@@ -1,7 +1,8 @@
 // src/pages/Notes.jsx
 import { useState, useEffect } from "react";
 
-const API_URL = "http://localhost:5000/api/notes/";
+const API = import.meta.env.VITE_API_URL;
+const API_URL = `${API}/api/notes/`;
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
