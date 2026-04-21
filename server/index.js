@@ -16,7 +16,7 @@ const app = express();
 import cors from "cors";
 
 const corsOptions = {
-  origin: "https://devnote-4s4dpong9-devnas-2004s-projects.vercel.app",
+  origin: "https://devnote-git-main-devnas-2004s-projects.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -25,7 +25,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ✅ explicitly handle preflight
-app.options("*", cors(corsOptions));
+app.options("/*", cors(corsOptions));
 
 app.use(express.json());
 
