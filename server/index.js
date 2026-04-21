@@ -24,13 +24,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// ✅ explicitly handle preflight
-app.options("/*", cors(corsOptions));
+
 
 app.use(express.json());
 
 // Routes
-app.use("/api/notes", notesRoutes);
+//app.use("/api/notes", notesRoutes);
 app.use("/api/auth", authRoutes);
 
 // Test route
