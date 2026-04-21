@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import notesRoutes from "./routes/Notes.js";
 import authRoutes from "./routes/auth.js";
 
@@ -15,10 +14,8 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "http://localhost:5173",
     "https://devnote-chi.vercel.app"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 app.options("*", cors());
