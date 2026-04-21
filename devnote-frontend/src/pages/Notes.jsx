@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 const API = import.meta.env.VITE_API_URL;
-const API_URL = `${API}/api/notes/`;
+const API_URL = `https://devnote-u4tl.onrender.com/api/notes/`;
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
